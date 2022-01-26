@@ -33,24 +33,13 @@ class ItemMall extends Model
     protected $primaryKey = 'item_id';
     protected $table = 'Web_ItemMall';
     public $timestamps = false;
-
+    public $incrementing = false;
 
     public function getActivitylogOptions(): LogOptions
     {
         if (!Helper::isAdmin()) {
             $this->disableLogging();
         }
-
-//        $fn = function(string $eventName) {
-//            switch($eventName) {
-//                case 'updated':
-//                    return "Updated Item Mall with Item ID ";
-//                case 'created':
-//                    return "Item Mall has been {$eventName}";
-//                default:
-//                    return "Item Mall has been {$eventName}";
-//            }
-//        };
 
         return LogOptions::defaults()
             ->useLogName('admin')
@@ -63,17 +52,8 @@ class ItemMall extends Model
     public function tapActivity(Activity $activity, string $eventName)
     {
 //        $model = $activity['subject'];
-//        switch($eventName) {
-//            case 'updated':
-//                $activity->description = "Updated Item Mall `" . $model->name . "`";
-//                break;
-//            case 'created':
-//                $activity->description = "Created a new Item Mall `" . $model->name . "`";
-//                break;
-//            default:
-//                $activity->description = "Item Mall `" . $model->name . "` has been {$eventName}";
-//                break;
-//        }
+//        $name = User::find($model->ITEM_SHOPIDX)->id_loginid;
+//        $activity->description = "Item has been {$eventName} for user {$name}";
     }
 
     /**
