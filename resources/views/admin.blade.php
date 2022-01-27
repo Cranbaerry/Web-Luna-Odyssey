@@ -897,13 +897,13 @@
                                             <td class="align-middle"><b>Web Settings</b></td>
                                             @break
                                             @case('App\Models\ItemMall')
-                                            <td class="align-middle"><b>Item Name:</b> {{ $data->subject_type::find($data->subject_id)->name }}</td>
+                                            <td class="align-middle"><b>Item Name:</b> {{ $data->subject_type::find($data->subject_id)->name or "<i>Deleted</i>" }}</td>
                                             @break
                                             @case('App\Models\Invoice')
                                             <td class="align-middle"><b>Transction ID:</b> {{ $data->subject_id }}</td>
                                             @break
                                             @case('App\Models\User')
-                                            <td class="align-middle"><b>Username:</b> {{ $data->subject_type::find($data->subject_id)->id_loginid }}</td>
+                                            <td class="align-middle"><b>Username:</b> {{ $data->subject_type::find($data->subject_id)->id_loginid or "<i>Deleted</i>" }}</td>
                                             @break
                                             @case('App\Models\Partner')
                                             <td class="align-middle"><b>Ref Code:</b> {{ $data->subject_id }}</td>
