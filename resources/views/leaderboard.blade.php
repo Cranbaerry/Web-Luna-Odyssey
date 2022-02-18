@@ -50,7 +50,7 @@
                 <div class="tab-pane fade show {{ $showTopUp ? 'active':  null}}" id="v-topup-guild" role="tabpanel" aria-labelledby="v-pills-topup-tab">
                     <nav>
                         <div class="row nav nav-tabs" id="nav-tab" role="tablist">
-                            <a class="col nav-link text-center active" id="nav-guildrank-tab" data-toggle="tab" href="#nav-guildrank" role="tab" aria-controls="nav-guildrank" aria-selected="true">Donation Ranking between {{ date("d/m/y", Helper::getSetting('topup_ranking_start')) }} and {{ date("d/m/y", Helper::getSetting('topup_ranking_end')) }}</a>
+                            <a class="col nav-link text-center active" id="nav-guildrank-tab" data-toggle="tab" href="#nav-guildrank" role="tab" aria-controls="nav-guildrank" aria-selected="true">Top Up Ranking between {{ date("d/m/y", Helper::getSetting('topup_ranking_start')) }} and {{ date("d/m/y", Helper::getSetting('topup_ranking_end')) }}</a>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
