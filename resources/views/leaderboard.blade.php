@@ -19,10 +19,12 @@
 
 
             <div class="nav flex-column nav-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link nav-rank-item d-flex {{ $showTopUp ? 'active':  null}}" id="v-pills-topup-tab" data-toggle="pill" href="#v-topup-guild" role="tab" aria-controls="v-topup-guild" aria-selected="{{ $showTopUp ? 'true' : 'false'}}">
-                    <img src="{{ asset("storage/img/badge/badge_transaction.png") }}" style="width: 65px" class="float-left " alt="Responsive image">
-                    <span class="pl-2 align-self-center font-weight-bold">Top Up</span>
-                </a>
+                @if($showTopUp || Helper::isAdmin())
+                    <a class="nav-link nav-rank-item d-flex {{ $showTopUp ? 'active':  null}}" id="v-pills-topup-tab" data-toggle="pill" href="#v-topup-guild" role="tab" aria-controls="v-topup-guild" aria-selected="{{ $showTopUp ? 'true' : 'false'}}">
+                        <img src="{{ asset("storage/img/badge/badge_transaction.png") }}" style="width: 65px" class="float-left " alt="Responsive image">
+                        <span class="pl-2 align-self-center font-weight-bold">Top Up</span>
+                    </a>
+                @endif
 
                 <a class="nav-link nav-rank-item d-flex {{ $showTopUp ? null :  'active'}}" id="v-pills-fighter-tab" data-toggle="pill" href="#v-pills-fighter" role="tab" aria-controls="v-pills-fighter" aria-selected="{{ $showTopUp ? 'false' : 'true'}}">
                     <img src="{{ asset("storage/img/badge/badge_fighter.png") }}" style="width: 65px" class="float-left " alt="Responsive image">
