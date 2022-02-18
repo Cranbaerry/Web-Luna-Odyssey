@@ -864,6 +864,7 @@
                     <a class="nav-link @if (Session::get('tab') == 'items') active @endif" id="nav-items-tab" data-toggle="pill" href="#nav-items" role="tab" aria-controls="nav-items" aria-selected="false">Item Delivery</a>
                     <a class="nav-link @if (Session::get('tab') == 'report') active @endif" id="nav-report-tab" data-toggle="pill" href="#nav-report" role="tab" aria-controls="nav-report" aria-selected="false">Transaction Report</a>
                     <a class="nav-link @if (Session::get('tab') == 'redeem') active @endif" id="nav-redeem-tab" data-toggle="pill" href="#nav-redeem" role="tab" aria-controls="nav-redeem" aria-selected="false">Redeem</a>
+                    <a class="nav-link @if (Session::get('tab') == 'ranking') active @endif" id="nav-ranking-tab" data-toggle="pill" href="#nav-ranking" role="tab" aria-controls="nav-ranking" aria-selected="false">Top Up Ranking</a>
                 </div>
             </nav>
         </div>
@@ -897,13 +898,13 @@
                                             <td class="align-middle"><b>Web Settings</b></td>
                                             @break
                                             @case('App\Models\ItemMall')
-                                            <td class="align-middle"><b>Item Name:</b> {{ $data->subject_type::find($data->subject_id)->name or "<i>Deleted</i>" }}</td>
+                                            <td class="align-middle"><b>Item Name:</b> {!! $data->subject_type::find($data->subject_id) !== null ? $data->subject_type::find($data->subject_id)->name : "<i>Deleted</i>" !!}</td>
                                             @break
                                             @case('App\Models\Invoice')
                                             <td class="align-middle"><b>Transction ID:</b> {{ $data->subject_id }}</td>
                                             @break
                                             @case('App\Models\User')
-                                            <td class="align-middle"><b>Username:</b> {{ $data->subject_type::find($data->subject_id)->id_loginid or "<i>Deleted</i>" }}</td>
+                                            <td class="align-middle"><b>Username:</b> {!! $data->subject_type::find($data->subject_id) !== null ?  $data->subject_type::find($data->subject_id)->id_loginid : "<i>Deleted</i>" !!}</td>
                                             @break
                                             @case('App\Models\Partner')
                                             <td class="align-middle"><b>Ref Code:</b> {{ $data->subject_id }}</td>
@@ -1561,6 +1562,49 @@
                         </div>
                     </div>
                 </div>
+
+
+                <div class="tab-pane fade @if (Session::get('tab') === 'ranking') active show @endif " id="nav-ranking" role="tabpanel" aria-labelledby="nav-report-tab">
+                    <div class="subtitle" style="font-size: 1.2rem;">Top Up Ranking</div>
+                    <div class="article pb-2" style="text-indent: 0;">Settings for donation leaderboard.</div>
+                    <form method="POST" action="{{ route('admin') }}">
+                        @csrf
+                        <input type="hidden" name="mode" value="ranking">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Status</label>
+                            <div class="col-sm-10">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="topup_ranking_status" id="inlineRadio1" value="1" {{ (boolean) Helper::getSetting('topup_ranking_status') ? 'checked' : null }}>
+                                    <label class="form-check-label" for="inlineRadio1">Enable</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="topup_ranking_status" id="inlineRadio2" value="0" {{ (boolean) Helper::getSetting('topup_ranking_status') ? null : 'checked' }}>
+                                    <label class="form-check-label" for="inlineRadio2">Disable</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Start Date</label>
+                            <div class="col-sm-10">
+                                <input id="startDate_topup" type="text" name="topup_ranking_start" class="form-control" value="{{ date("m/d/y", Helper::getSetting('topup_ranking_start')) }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">End Date</label>
+                            <div class="col-sm-10">
+                                <input id="endDate_topup" type="text" name="topup_ranking_end" class="form-control" value="{{ date("m/d/y", Helper::getSetting('topup_ranking_end')) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row pt-2">
+                            <div class="mx-auto">
+                                <button class="btn btn-primary">Apply Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
             </div>
         </div>
 

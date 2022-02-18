@@ -504,6 +504,14 @@
             @endif
 
             var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+            $('#startDate_topup').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
+            $('#endDate_topup').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
             $('#startDate').datepicker({
                 uiLibrary: 'bootstrap4',
                 iconsLibrary: 'fontawesome',

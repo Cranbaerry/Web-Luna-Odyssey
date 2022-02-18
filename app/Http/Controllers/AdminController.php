@@ -590,6 +590,42 @@ class AdminController extends Controller
                 }
 
                 break;
+            case 'ranking':
+                $request->session()->flash('tab', 'ranking');
+                $request->validate([
+                    'topup_ranking_start' => ['required', 'date'],
+                    'topup_ranking_end' => ['required', 'date'],
+                    'topup_ranking_status' => ['required'],
+                ]);
+
+                $data = $request->except('_token', 'mode');
+                $save = [];
+
+                foreach ($data as $key => $value) {
+                    $setting = WebSettings::where('data', $key)->first();
+
+                    if ($setting == null)
+                        return redirect()->back()->withErrors(['msg' => sprintf('Column %s is not found in the database.', $key)]);
+
+                    if ($setting->value == $request->$key)
+                        continue;
+
+                    switch($key) {
+                        case 'topup_ranking_status':
+                            $setting->value = $request->$key;
+                            break;
+                        case 'topup_ranking_start':
+                        case 'topup_ranking_end':
+                            $setting->value = (string) strtotime($request->$key);
+                            break;
+                    }
+
+                    array_push($save, $setting);
+                }
+                foreach ($save as $field) $field->save();
+
+                $request->session()->flash('status', 'Task was successful');
+                return redirect()->back();
         }
     }
 }

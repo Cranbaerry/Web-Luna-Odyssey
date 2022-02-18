@@ -12,6 +12,21 @@ class Invoice extends Model
     const CREATED_AT = 'date_created';
     const UPDATED_AT = 'date_updated';
 
+    // LARAVEL 8 BUG WORKAROUND
+    // https://stackoverflow.com/questions/32422593/laravel-belongsto-relationship-with-different-databases-not-working
+    public function __construct(array $attributes = []) {
+        $this->table = env('DB_MEMBER') . '.dbo.' . $this->table;
+        parent::__construct();
+    }
+
+    public function user()
+    {
+        $newResource = clone $this;
+        return $newResource
+            ->setConnection('memberdb')
+            ->belongsTo(User::class, 'user_id', 'id_idx');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
