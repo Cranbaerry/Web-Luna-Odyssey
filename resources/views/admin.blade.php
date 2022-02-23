@@ -875,70 +875,77 @@
             <div class="tab-content " id="nav-tabContent">
                 <div class="tab-pane fade @if (Session::get('tab') === null) active show @endif" id="nav-activity" role="tabpanel" aria-labelledby="nav-activity-tab">
                     <div class="form-group">
-                        <div class="subtitle" style="font-size: 1.2rem;">Activity Log</div>
-                        <div class="article pb-3" style="text-indent: 0;">List of admin activities.</div>
-                        <div class="table-responsive">
-                            <table class="table pt-1">
-                                <thead>
-                                <tr>
-                                    <th scope="col" class="text-center">Name</th>
-                                    <th scope="col">Action</th>
-                                    <th scope="col">Subject</th>
-                                    <th scope="col" class="text-center">Date</th>
-                                    <th scope="col" class="text-center">Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($activities as $data)
+
+                        @if(Auth::user()->id_loginid != 'admin1' && Auth::user()->id_loginid != 'admin2')
+                            <div class="subtitle" style="font-size: 1.2rem;">Not Authorized</div>
+                            <div class="article pb-2" style="text-indent: 0;">You don't have permission to access this page.</div>
+                        @else
+                            <div class="subtitle" style="font-size: 1.2rem;">Activity Log</div>
+                            <div class="article pb-3" style="text-indent: 0;">List of admin activities.</div>
+                            <div class="table-responsive">
+                                <table class="table pt-1">
+                                    <thead>
                                     <tr>
-                                        <td class="align-middle text-center">{{ App\Models\User::find($data->causer_id)->id_loginid }}</td>
-                                        <td class="align-middle">{{ $data->description }}</td>
-                                        @switch($data->subject_type)
-                                            @case('App\Models\WebSettings')
-                                            <td class="align-middle"><b>Web Settings</b></td>
-                                            @break
-                                            @case('App\Models\ItemMall')
-                                            <td class="align-middle"><b>Item Name:</b> {!! $data->subject_type::find($data->subject_id) !== null ? $data->subject_type::find($data->subject_id)->name : "<i>Deleted</i>" !!}</td>
-                                            @break
-                                            @case('App\Models\Invoice')
-                                            <td class="align-middle"><b>Transction ID:</b> {{ $data->subject_id }}</td>
-                                            @break
-                                            @case('App\Models\User')
-                                            <td class="align-middle"><b>Username:</b> {!! $data->subject_type::find($data->subject_id) !== null ?  $data->subject_type::find($data->subject_id)->id_loginid : "<i>Deleted</i>" !!}</td>
-                                            @break
-                                            @case('App\Models\Partner')
-                                            <td class="align-middle"><b>Ref Code:</b> {{ $data->subject_id }}</td>
-                                            @break
-                                            @case('App\Models\Item')
-                                            <td class="align-middle"><b>Item ID:</b> {{ $data->subject_id }}</td>
-                                            @break
-                                            @case('App\Models\Redeem')
-                                            <td class="align-middle"><b>Code:</b> {{ $data->subject_id }}</td>
-                                            @break
-                                            @default
-                                            @if($data->event == 'download')
-                                                <td class="align-middle"><b>Transaction Report</b></td>
-                                            @else
-                                                <td class="align-middle"></td>
-                                            @endif
-                                        @endswitch
-
-                                        <td class="align-middle">{{ $data->created_at }}</td>
-                                        <td class="d-flex justify-content-center align-middle">
-                                            <button type="button" class="btn btn-secondary mr-1" style="padding: .375rem .75rem;"
-                                                    onclick="showActivityDetails(this, '{{ $data->properties }}')">
-
-                                                <i class="fas fa-search"></i></button>
-                                        </td>
+                                        <th scope="col" class="text-center">Name</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col" class="text-center">Date</th>
+                                        <th scope="col" class="text-center">Actions</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($activities as $data)
+                                        <tr>
+                                            <td class="align-middle text-center">{{ App\Models\User::find($data->causer_id)->id_loginid }}</td>
+                                            <td class="align-middle">{{ $data->description }}</td>
+                                            @switch($data->subject_type)
+                                                @case('App\Models\WebSettings')
+                                                <td class="align-middle"><b>Web Settings</b></td>
+                                                @break
+                                                @case('App\Models\ItemMall')
+                                                <td class="align-middle"><b>Item Name:</b> {!! $data->subject_type::find($data->subject_id) !== null ? $data->subject_type::find($data->subject_id)->name : "<i>Deleted</i>" !!}</td>
+                                                @break
+                                                @case('App\Models\Invoice')
+                                                <td class="align-middle"><b>Transction ID:</b> {{ $data->subject_id }}</td>
+                                                @break
+                                                @case('App\Models\User')
+                                                <td class="align-middle"><b>Username:</b> {!! $data->subject_type::find($data->subject_id) !== null ?  $data->subject_type::find($data->subject_id)->id_loginid : "<i>Deleted</i>" !!}</td>
+                                                @break
+                                                @case('App\Models\Partner')
+                                                <td class="align-middle"><b>Ref Code:</b> {{ $data->subject_id }}</td>
+                                                @break
+                                                @case('App\Models\Item')
+                                                <td class="align-middle"><b>Item ID:</b> {{ $data->subject_id }}</td>
+                                                @break
+                                                @case('App\Models\Redeem')
+                                                <td class="align-middle"><b>Code:</b> {{ $data->subject_id }}</td>
+                                                @break
+                                                @default
+                                                @if($data->event == 'download')
+                                                    <td class="align-middle"><b>Transaction Report</b></td>
+                                                @else
+                                                    <td class="align-middle"></td>
+                                                @endif
+                                            @endswitch
 
-                        <div class="d-flex justify-content-center w-100">
-                            {!! $activities->links() !!}
-                        </div>
+                                            <td class="align-middle">{{ $data->created_at }}</td>
+                                            <td class="d-flex justify-content-center align-middle">
+                                                <button type="button" class="btn btn-secondary mr-1" style="padding: .375rem .75rem;"
+                                                        onclick="showActivityDetails(this, '{{ $data->properties }}')">
+
+                                                    <i class="fas fa-search"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-center w-100">
+                                {!! $activities->links() !!}
+                            </div>
+                        @endif
+
                     </div>
                 </div>
 
@@ -1476,30 +1483,35 @@
                 </div>
 
                 <div class="tab-pane fade @if (Session::get('tab') === 'report') active show @endif " id="nav-report" role="tabpanel" aria-labelledby="nav-report-tab">
-                    <div class="subtitle" style="font-size: 1.2rem;">Transactions Report</div>
-                    <div class="article pb-2" style="text-indent: 0;">Exports list of successful transactions in xls format.</div>
-                    <form method="POST" action="{{ route('admin') }}">
-                        @csrf
-                        <input type="hidden" name="mode" value="report">
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Start Date</label>
-                            <div class="col-sm-10">
-                                <input id="startDate" type="text" name="date_start" class="form-control" value="">
+                    @if(Auth::user()->id_loginid != 'admin1' && Auth::user()->id_loginid != 'admin2')
+                        <div class="subtitle" style="font-size: 1.2rem;">Not Authorized</div>
+                        <div class="article pb-2" style="text-indent: 0;">You don't have permission to access this page.</div>
+                    @else
+                        <div class="subtitle" style="font-size: 1.2rem;">Transactions Report</div>
+                        <div class="article pb-2" style="text-indent: 0;">Exports list of successful transactions in xls format.</div>
+                        <form method="POST" action="{{ route('admin') }}">
+                            @csrf
+                            <input type="hidden" name="mode" value="report">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Start Date</label>
+                                <div class="col-sm-10">
+                                    <input id="startDate" type="text" name="date_start" class="form-control" value="">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">End Date</label>
-                            <div class="col-sm-10">
-                                <input id="endDate" type="text" name="date_end" class="form-control" value="">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">End Date</label>
+                                <div class="col-sm-10">
+                                    <input id="endDate" type="text" name="date_end" class="form-control" value="">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row pt-2">
-                            <div class="mx-auto">
-                                <button class="btn btn-primary">Download Excel</button>
+                            <div class="form-group row pt-2">
+                                <div class="mx-auto">
+                                    <button class="btn btn-primary">Download Excel</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    @endif
                 </div>
 
 
@@ -1564,7 +1576,7 @@
                 </div>
 
 
-                <div class="tab-pane fade @if (Session::get('tab') === 'ranking') active show @endif " id="nav-ranking" role="tabpanel" aria-labelledby="nav-report-tab">
+                <div class="tab-pane fade @if (Session::get('tab') === 'ranking') active show @endif " id="nav-ranking" role="tabpanel" aria-labelledby="nav-ranking-tab">
                     <div class="subtitle" style="font-size: 1.2rem;">Top Up Ranking</div>
                     <div class="article pb-2" style="text-indent: 0;">Settings for donation leaderboard.</div>
                     <form method="POST" action="{{ route('admin') }}">
