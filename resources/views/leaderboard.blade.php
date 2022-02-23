@@ -71,15 +71,14 @@
                                                ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                                ->groupBy('user_id')
                                                ->orderBy('Amount', 'DESC')
-                                               ->where('status_code', '==', '00')
-                                               ->whereRaw('DATEDIFF(SECOND,\'1970-01-01\', date_created) BETWEEN ? AND ?', [Helper::getSetting('topup_ranking_start'), Helper::getSetting('topup_ranking_end')])
-                                               ->take(50)
+                                               ->whereRaw('status_code = \'00\' AND DATEDIFF(SECOND,\'1970-01-01\', date_created) BETWEEN ? AND ?', [Helper::getSetting('topup_ranking_start'), Helper::getSetting('topup_ranking_end')])
+                                               ->take(10)
                                                ->get() as $data)
 
                                         <tr>
                                             <th scope="row" class="text-center">#{{ $loop->index + 1 }}</th>
                                             <td class="text-left">{{ App\Models\User::find($data->user_id)->id_loginid }}</td>
-                                            <td class="text-center">Rp. {{ number_format($data->Amount) }}</td>
+                                            <td class="text-center">{{ number_format($data->Amount) }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

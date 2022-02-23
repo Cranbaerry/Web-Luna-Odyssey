@@ -203,11 +203,11 @@
                         <div id="fighterCarousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item px-4 active">
-                                    <label class="text-center w-100">Phalanx Class</label>
+                                    <label class="text-center w-100">Paladin</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
-                                            ->where('CHARACTER_JOB4', 1)
+                                            ->where('CHARACTER_JOB5', 1)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -222,11 +222,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Knight Class</label>
+                                    <label class="text-center w-100">Panzer</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
-                                            ->where('CHARACTER_JOB4', 2)
+                                            ->where('CHARACTER_JOB5', 2)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -241,11 +241,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Gladiator Class</label>
+                                    <label class="text-center w-100">Crusader</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
-                                            ->where('CHARACTER_JOB4', 3)
+                                            ->where('CHARACTER_JOB5', 3)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -260,11 +260,49 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Rune Knight Class</label>
+                                    <label class="text-center w-100">Destroyer</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
-                                            ->where('CHARACTER_JOB4', 4)
+                                            ->where('CHARACTER_JOB5', 4)
+                                            ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
+                                            ->orderBy('CHARACTER_GRADE', 'DESC')
+                                            ->orderBy('CHARACTER_EXPOINT', 'DESC')
+                                            ->take(3)
+                                            ->get() as $char)
+                                            <tr>
+                                                <th scope="row" class="text-right">#{{ $loop->index + 1 }}</th>
+                                                <td class="text-left">{{ $char->CHARACTER_NAME }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="carousel-item px-4">
+                                    <label class="text-center w-100">Sword Master</label>
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
+                                            ->where('CHARACTER_JOB5', 5)
+                                            ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
+                                            ->orderBy('CHARACTER_GRADE', 'DESC')
+                                            ->orderBy('CHARACTER_EXPOINT', 'DESC')
+                                            ->take(3)
+                                            ->get() as $char)
+                                            <tr>
+                                                <th scope="row" class="text-right">#{{ $loop->index + 1 }}</th>
+                                                <td class="text-left">{{ $char->CHARACTER_NAME }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="carousel-item px-4">
+                                    <label class="text-center w-100">Magnus</label>
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        @foreach (App\Models\Character::where('CHARACTER_JOB1', 1)
+                                            ->where('CHARACTER_JOB5', 6)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -320,11 +358,11 @@
                         <div id="rogueCarousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item px-4 active">
-                                    <label class="text-center w-100">Ranger Class</label>
+                                    <label class="text-center w-100">Sniper</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 2)
-                                            ->where('CHARACTER_JOB4', 1)
+                                            ->where('CHARACTER_JOB5', 1)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -339,11 +377,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Treasure Hunter</label>
+                                    <label class="text-center w-100">Entrapper</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 2)
-                                            ->where('CHARACTER_JOB4', 2)
+                                            ->where('CHARACTER_JOB5', 2)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -358,11 +396,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Assassin Class</label>
+                                    <label class="text-center w-100">Blade Taker</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 2)
-                                            ->where('CHARACTER_JOB4', 3)
+                                            ->where('CHARACTER_JOB5', 3)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -377,11 +415,30 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Rune Walker Class</label>
+                                    <label class="text-center w-100">Templar Master</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 2)
-                                            ->where('CHARACTER_JOB4', 4)
+                                            ->where('CHARACTER_JOB5', 4)
+                                            ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
+                                            ->orderBy('CHARACTER_GRADE', 'DESC')
+                                            ->orderBy('CHARACTER_EXPOINT', 'DESC')
+                                            ->take(3)
+                                            ->get() as $char)
+                                            <tr>
+                                                <th scope="row" class="text-right">#{{ $loop->index + 1 }}</th>
+                                                <td class="text-left">{{ $char->CHARACTER_NAME }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="carousel-item px-4">
+                                    <label class="text-center w-100">Arch Ranger</label>
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        @foreach (App\Models\Character::where('CHARACTER_JOB1', 2)
+                                            ->where('CHARACTER_JOB5', 5)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -437,11 +494,11 @@
                         <div id="mageCarousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item px-4 active">
-                                    <label class="text-center w-100">Bishop Class</label>
+                                    <label class="text-center w-100">Cardinal</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 3)
-                                            ->where('CHARACTER_JOB4', 1)
+                                            ->where('CHARACTER_JOB5', 1)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -456,11 +513,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Warlock Class</label>
+                                    <label class="text-center w-100">Soul Arbiter</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 3)
-                                            ->where('CHARACTER_JOB4', 2)
+                                            ->where('CHARACTER_JOB5', 2)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -475,11 +532,11 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Inquirer Class</label>
+                                    <label class="text-center w-100">Grand Master</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 3)
-                                            ->where('CHARACTER_JOB4', 3)
+                                            ->where('CHARACTER_JOB5', 3)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')
@@ -494,11 +551,30 @@
                                     </table>
                                 </div>
                                 <div class="carousel-item px-4">
-                                    <label class="text-center w-100">Elemental Master</label>
+                                    <label class="text-center w-100">Necromancer</label>
                                     <table class="table table-borderless mb-0">
                                         <tbody>
                                         @foreach (App\Models\Character::where('CHARACTER_JOB1', 3)
-                                            ->where('CHARACTER_JOB4', 4)
+                                            ->where('CHARACTER_JOB5', 4)
+                                            ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
+                                            ->orderBy('CHARACTER_GRADE', 'DESC')
+                                            ->orderBy('CHARACTER_EXPOINT', 'DESC')
+                                            ->take(3)
+                                            ->get() as $char)
+                                            <tr>
+                                                <th scope="row" class="text-right">#{{ $loop->index + 1 }}</th>
+                                                <td class="text-left">{{ $char->CHARACTER_NAME }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="carousel-item px-4">
+                                    <label class="text-center w-100">Rune Master</label>
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        @foreach (App\Models\Character::where('CHARACTER_JOB1', 3)
+                                            ->where('CHARACTER_JOB5', 5)
                                             ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                             ->orderBy('CHARACTER_GRADE', 'DESC')
                                             ->orderBy('CHARACTER_EXPOINT', 'DESC')

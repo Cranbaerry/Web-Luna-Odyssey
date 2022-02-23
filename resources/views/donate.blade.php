@@ -62,6 +62,22 @@
                                 Untuk pembayaran dari bank lain selain partner terdaftar kami, mohon pilih <strong>VA ATM Bersama</strong> sebagai opsi pembayaran karena sudah bekerja sama dengan <a href="https://www.atmbersama.com/news/detail/ini-dia-daftar-bank-anggota-atm-bersama-catat-ya" target="_blank">berbagai bank di Indonesia</a>. Biaya transfer antar bank akan dikenakan sesuai ketentuan masing-masing bank yang berlaku.
                             </small>
                         </p>
+
+                        <p>
+                            <small class="form-text text-muted pl-1">
+                                All payment options <b>excluding</b> PayPal are only available to Indonesian users.
+                                For international users, please choose PayPal.
+                            </small>
+                        </p>
+
+                        <p>
+                            <small class="form-text text-muted pl-1">
+                                <b>About Visa/Mastercard (credit card option):</b><br />
+                                Credit Card payment option is only available for Indonesian Card, with a maximum of IDR 1.000.000 per transaction. <br />
+                                For International Credit Card or transaction over IDR 1.000.000, please use Credit Card option through PayPal.
+                            </small>
+                        </p>
+
                     </div>
 
                 </div>

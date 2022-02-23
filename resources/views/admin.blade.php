@@ -1586,13 +1586,13 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Start Date</label>
                             <div class="col-sm-10">
-                                <input id="startDate_topup" type="text" name="topup_ranking_start" class="form-control" value="{{ date("m/d/y", Helper::getSetting('topup_ranking_start')) }}">
+                                <input id="startDate_topup" type="text" name="topup_ranking_start" class="form-control" value="{{ date("m/d/Y", Helper::getSetting('topup_ranking_start')) }}">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">End Date</label>
                             <div class="col-sm-10">
-                                <input id="endDate_topup" type="text" name="topup_ranking_end" class="form-control" value="{{ date("m/d/y", Helper::getSetting('topup_ranking_end')) }}">
+                                <input id="endDate_topup" type="text" name="topup_ranking_end" class="form-control" value="{{ date("m/d/Y", Helper::getSetting('topup_ranking_end')) }}">
                             </div>
                         </div>
 
