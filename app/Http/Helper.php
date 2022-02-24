@@ -10,7 +10,8 @@ class Helper {
             return strtoupper($string);
     }
 
-    public static function pingServer() {
+    public static function pingServer(): bool
+    {
         try {
             $fp = fsockopen('127.0.0.1', 17001, $errno, $errstr, 0.05);
             fclose($fp);
@@ -27,7 +28,13 @@ class Helper {
         return $setting->value;
     }
 
-    public static function isAdmin() {
+    public static function isOwner(): bool
+    {
+        return Auth::user() &&  (Auth::user()->id_idx == 98 || Auth::user()->id_idx == 99 || Auth::user()->id_idx == 2);
+    }
+
+    public static function isAdmin(): bool
+    {
         return Auth::user() &&  (Auth::user()->id_idx == 98 || Auth::user()->id_idx == 99 || Auth::user()->id_idx == 100 || Auth::user()->id_idx == 2);
     }
 

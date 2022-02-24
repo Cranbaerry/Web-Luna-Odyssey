@@ -876,7 +876,7 @@
                 <div class="tab-pane fade @if (Session::get('tab') === null) active show @endif" id="nav-activity" role="tabpanel" aria-labelledby="nav-activity-tab">
                     <div class="form-group">
 
-                        @if(Auth::user()->id_loginid != 'admin1' && Auth::user()->id_loginid != 'admin2')
+                        @if(!Helper::isOwner())
                             <div class="subtitle" style="font-size: 1.2rem;">Not Authorized</div>
                             <div class="article pb-2" style="text-indent: 0;">You don't have permission to access this page.</div>
                         @else
@@ -1168,6 +1168,13 @@
                             </div>
 
                             <div class=" ml-auto" style="padding-left: 50px;">
+                                <form method="POST" action="{{ route('admin') }}" class="d-inline">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="mode" value="itemmalllog">
+                                    <button class="btn btn-primary">
+                                        Download Logs
+                                    </button>
+                                </form>
                                 <button class="btn btn-primary" onclick="showItemEditor(this, 1);">
                                     Add Item
                                 </button>
@@ -1483,7 +1490,7 @@
                 </div>
 
                 <div class="tab-pane fade @if (Session::get('tab') === 'report') active show @endif " id="nav-report" role="tabpanel" aria-labelledby="nav-report-tab">
-                    @if(Auth::user()->id_loginid != 'admin1' && Auth::user()->id_loginid != 'admin2')
+                    @if(!Helper::isOwner())
                         <div class="subtitle" style="font-size: 1.2rem;">Not Authorized</div>
                         <div class="article pb-2" style="text-indent: 0;">You don't have permission to access this page.</div>
                     @else

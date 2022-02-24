@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemMallExport;
 use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Partner;
@@ -536,6 +537,14 @@ class AdminController extends Controller
                     $request->date_start,
                     $request->date_end
                 ), 'Report.xlsx');
+            case 'itemmalllog':
+                $request->session()->flash('tab', 'itemmall');
+
+                activity('admin')
+                    ->causedBy(Auth::user())
+                    ->event('download')
+                    ->log('Downloaded item mall report');
+                return Excel::download(new ItemMallExport(), 'Report.xlsx');
             case 'redeemeditor':
                 $request->session()->flash('tab', 'redeem');
                 $request->validate([
@@ -626,6 +635,8 @@ class AdminController extends Controller
 
                 $request->session()->flash('status', 'Task was successful');
                 return redirect()->back();
+            default:
+                die("Unknown mode");
         }
     }
 }
