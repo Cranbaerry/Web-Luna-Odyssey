@@ -17,7 +17,7 @@ class Helper {
             fclose($fp);
             return true;
         } catch (\Exception $th) {
-            null;
+            return false;
         }
 
         return false;
@@ -30,7 +30,7 @@ class Helper {
 
     public static function isOwner(): bool
     {
-        return Auth::user() &&  (Auth::user()->id_idx == 98 || Auth::user()->id_idx == 99 || Auth::user()->id_idx == 2);
+        return Auth::user() &&  (Auth::user()->id_idx == 98 || Auth::user()->id_idx == 100 || Auth::user()->id_idx == 2);
     }
 
     public static function isAdmin(): bool
