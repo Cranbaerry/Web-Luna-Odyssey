@@ -71,7 +71,7 @@
                                                ->whereHas('user', function($q){ $q->where('UserLevel', 6); })
                                                ->groupBy('user_id')
                                                ->orderBy('Amount', 'DESC')
-                                               ->whereRaw('status_code = \'00\' AND DATEDIFF(SECOND,\'1970-01-01\', date_created) BETWEEN ? AND ?', [Helper::getSetting('topup_ranking_start'), Helper::getSetting('topup_ranking_end')])
+                                               ->whereRaw('status_code = \'00\' AND date_created BETWEEN ? AND ?', [date("Y-m-d", Helper::getSetting('topup_ranking_start')), date("Y-m-d", Helper::getSetting('topup_ranking_end'))])
                                                ->take(10)
                                                ->get() as $data)
 
