@@ -76,7 +76,7 @@
                                                ->get() as $data)
 
                                         <tr>
-                                            <th scope="row" class="text-center">#{{ $loop->index + 1 }}</th>
+                                            <th scope="row" class="text-center">{{ $loop->index + 1 }}</th>
                                             <td class="text-left">{{ App\Models\User::find($data->user_id)->id_loginid }}</td>
                                             <td class="text-center">{{ number_format($data->Amount) }}</td>
                                         </tr>
@@ -643,7 +643,7 @@
                                                ->get() as $guild)
 
                                         <tr>
-                                            <th scope="row" class="text-center">#{{ $loop->index + 1 }}</th>
+                                            <th scope="row" class="text-center">{{ $loop->index + 1 }}</th>
                                             <td class="text-left">{{ $guild->GuildName }}</td>
                                             <td class="text-left">{{ App\Models\Character::find($guild->MasterIdx)->CHARACTER_NAME }}</td>
                                             <td class="text-center">{{ $guild->GuildLevel }}</td>

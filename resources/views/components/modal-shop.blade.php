@@ -32,7 +32,7 @@
                             <div class="tile h-100 p-3 w-100 text-center mx-auto" style="background: aliceblue;">
 
                                 <span><strong id="buyItemEffectsColTitle">Effects</strong></span>
-                                <ul id="buyItemEffects" class="list-group list-group-flush mt-2 overflow-auto" style="height: 240px;">
+                                <ul id="buyItemEffects" class="list-group list-group-flush mt-2 overflow-auto" style="height: 240px; overflow-y: scroll;">
 
                                 </ul>
                             </div>
