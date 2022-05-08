@@ -19,6 +19,8 @@
     <link href="{{ asset("storage/css/json-viewer.css") }} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset("storage/css/jquery.stepProgressBar.css") }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset("storage/css/bootstrap-image-checkbox.css") }}">
 </head>
 
 <body>
@@ -188,20 +190,6 @@
         </div>
     </div>
 
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
-    <script src="{{ asset('storage/js/bootstrap-input-spinner.js') }}"></script>
-    <script src="{{ asset('storage/js/tagsinput.js') }}"></script>
-    <script src="{{ asset('storage/js/json-viewer.js') }}"></script>
-    <script src="https://kit.fontawesome.com/9ee911f0e3.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
     <script>
         function basename(path) {
             return path.split('/').reverse()[0];
@@ -235,7 +223,24 @@
             }
             return x1 + x2;
         }
+    </script>
 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+    <script src="{{ asset('storage/js/bootstrap-input-spinner.js') }}"></script>
+    <script src="{{ asset('storage/js/tagsinput.js') }}"></script>
+    <script src="{{ asset('storage/js/json-viewer.js') }}"></script>
+    <script src="https://kit.fontawesome.com/9ee911f0e3.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ asset('storage/js/jquery.stepProgressBar.js') }}"></script>
+
+    <script>
         function buyItem(el) {
             var item = jQuery(el);
             $('#buyItemEffects').html('');
@@ -479,20 +484,6 @@
                     });
             });
 
-            $('#modalItemEditorCategory').on('change', function() {
-                $('#modalItemEditorQty').attr('value', '1');
-                if (this.value == 4) {
-                    $('#modalItemEditorQty').attr('min', '1');
-                    $('#modalItemEditorQty').attr('max', '100');
-                    $("#subItemsWrapper").fadeIn();
-                    $("#modalItemEditorEffectsRow").hide();
-                } else {
-                    $('#modalItemEditorQty').attr('min', '1');
-                    $('#modalItemEditorQty').attr('max', '1');
-                    $("#subItemsWrapper").hide();
-                    $("#modalItemEditorEffectsRow").fadeIn();
-                }
-            });
 
             $(document).on('change', '.custom-file-input', function (event) {
                 $(this).next('.custom-file-label').html(event.target.files[0].name);
@@ -504,14 +495,6 @@
             @endif
 
             var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-            $('#startDate_topup').datepicker({
-                uiLibrary: 'bootstrap4',
-                iconsLibrary: 'fontawesome',
-            });
-            $('#endDate_topup').datepicker({
-                uiLibrary: 'bootstrap4',
-                iconsLibrary: 'fontawesome',
-            });
             $('#startDate').datepicker({
                 uiLibrary: 'bootstrap4',
                 iconsLibrary: 'fontawesome',
@@ -524,39 +507,6 @@
                     return $('#startDate').val();
                 },
                 maxDate: today
-            });
-
-            $('#itemDeliveryUsernameCol > .bootstrap-tagsinput > input').on('paste', function (e) {
-                var pastedData = e.originalEvent.clipboardData.getData('text');
-                var array = pastedData.match(/[^\s]+/g);
-                $.each(array, function( index, value ) {
-                    $('#itemDeliveryName').tagsinput('add', value);
-                });
-
-                e.preventDefault();
-            });
-
-            $("#subItemsWrapper").on("click", "#addSubItem", function(e){
-                e.preventDefault();
-                var subitems = JSON.parse($('#modalItemEditorSubItems').val());
-                subitems.push({"MallItemID": $('#modalItemEditorId').val(),"Name":"","Image":""});
-                $("#subItems").append('<div class="input-group mt-2"> <input onfocus="this.oldvalue = this.value;" onchange="subItemsOnChange(this)"  type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off"> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div> <div class="custom-file" style="margin-left: 7px; padding-left: 60px;"> <input onchange="subItemsOnChange(this)" type="file" class="custom-file-input" name="sub_item_img[]"> <label class="custom-file-label"></label> </div> </div>');
-                $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
-            });
-
-            $("#subItemsWrapper").on("click", ".removeSubItem", function(e){
-                e.preventDefault();
-                var subitems = JSON.parse($('#modalItemEditorSubItems').val());
-                var itemName = $(this).parents(".input-group").find('input:eq(0)').val();
-                for (let [i, subitem] of subitems.entries()) {
-                    if (subitem.Name == itemName) {
-                        subitems.splice(i, 1);
-                        break;
-                    }
-                }
-
-                $(this).parents(".input-group").remove();
-                $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
             });
 
             $('body').tooltip({

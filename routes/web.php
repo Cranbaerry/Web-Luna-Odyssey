@@ -106,6 +106,10 @@ Route::post('/dashboard/redeem', [UserController::class, 'redeem'])
     ->middleware('auth')
     ->name('redeem');
 
+Route::post('/dashboard/tiered-spender', [UserController::class, 'tieredSpender'])
+    ->middleware('auth')
+    ->name('tiered.spender');
+
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
@@ -116,7 +120,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 });
 
 
-Route::name('api.')->group(function () {    
+Route::name('api.')->group(function () {
     Route::post('/api/login', [AuthenticatedSessionController::class, 'login'])
         ->name('login');
 

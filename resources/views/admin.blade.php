@@ -131,6 +131,7 @@
                     $('#modalItemEditorCategory').val(0);
                     $('#modalItemEditorPrice').val(0);
                     $('#modalItemEditorImg').html('');
+                    $('#modalItemEditorSubItems').val('[]');
                     $('[name="featured_label"]').val([1])
 
                     $("#subItemsWrapper").hide();
@@ -865,6 +866,7 @@
                     <a class="nav-link @if (Session::get('tab') == 'report') active @endif" id="nav-report-tab" data-toggle="pill" href="#nav-report" role="tab" aria-controls="nav-report" aria-selected="false">Transaction Report</a>
                     <a class="nav-link @if (Session::get('tab') == 'redeem') active @endif" id="nav-redeem-tab" data-toggle="pill" href="#nav-redeem" role="tab" aria-controls="nav-redeem" aria-selected="false">Redeem</a>
                     <a class="nav-link @if (Session::get('tab') == 'ranking') active @endif" id="nav-ranking-tab" data-toggle="pill" href="#nav-ranking" role="tab" aria-controls="nav-ranking" aria-selected="false">Top Up Ranking</a>
+                    <a class="nav-link @if (Session::get('tab') == 'tiered') active @endif" id="nav-tiered-tab" data-toggle="pill" href="#nav-tiered" role="tab" aria-controls="nav-tiered" aria-selected="false">Tiered Spender</a>
                 </div>
             </nav>
         </div>
@@ -1623,9 +1625,110 @@
                     </form>
                 </div>
 
+                <div class="tab-pane fade @if (Session::get('tab') === 'tiered') active show @endif " id="nav-tiered" role="tabpanel" aria-labelledby="nav-tiered-tab">
+                    <div class="subtitle" style="font-size: 1.2rem;">Tiered Spender</div>
+                    <div class="article pb-2" style="text-indent: 0;">Settings for free rewards event.</div>
+                    <form method="POST" action="{{ route('admin') }}">
+                        @csrf
+                        <input type="hidden" name="mode" value="tiered">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Event Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="tiered_spender_title" class="form-control" value="{{ Helper::getSetting('tiered_spender_title') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Start Date</label>
+                            <div class="col-sm-10">
+                                <input id="startDate_tier" type="text" name="tiered_spender_start" class="form-control" value="{{ date("m/d/Y", Helper::getSetting('tiered_spender_start')) }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">End Date</label>
+                            <div class="col-sm-10">
+                                <input id="endDate_tier" type="text" name="tiered_spender_end" class="form-control" value="{{ date("m/d/Y", Helper::getSetting('tiered_spender_end')) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row pt-2">
+                            <div class="mx-auto">
+                                <button class="btn btn-primary">Apply Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
             </div>
         </div>
 
     </div>
+
+    <script>
+        window.onload = function () {
+            $('#startDate_topup').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
+            $('#endDate_topup').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
+            $('#startDate_tier').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
+            $('#endDate_tier').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+            });
+
+            $('#modalItemEditorCategory').on('change', function() {
+                $('#modalItemEditorQty').attr('value', '1');
+                if (this.value == 4) {
+                    $('#modalItemEditorQty').attr('min', '1');
+                    $('#modalItemEditorQty').attr('max', '100');
+                    $("#subItemsWrapper").fadeIn();
+                    $("#modalItemEditorEffectsRow").hide();
+                } else {
+                    $('#modalItemEditorQty').attr('min', '1');
+                    $('#modalItemEditorQty').attr('max', '1');
+                    $("#subItemsWrapper").hide();
+                    $("#modalItemEditorEffectsRow").fadeIn();
+                }
+            });
+
+            $('#itemDeliveryUsernameCol > .bootstrap-tagsinput > input').on('paste', function (e) {
+                var pastedData = e.originalEvent.clipboardData.getData('text');
+                var array = pastedData.match(/[^\s]+/g);
+                $.each(array, function( index, value ) {
+                    $('#itemDeliveryName').tagsinput('add', value);
+                });
+
+                e.preventDefault();
+            });
+
+            $("#subItemsWrapper").on("click", "#addSubItem", function(e){
+                e.preventDefault();
+                var subitems = JSON.parse($('#modalItemEditorSubItems').val());
+                subitems.push({"MallItemID": $('#modalItemEditorId').val(),"Name":"","Image":""});
+                $("#subItems").append('<div class="input-group mt-2"> <input onfocus="this.oldvalue = this.value;" onchange="subItemsOnChange(this)"  type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off"> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div> <div class="custom-file" style="margin-left: 7px; padding-left: 60px;"> <input onchange="subItemsOnChange(this)" type="file" class="custom-file-input" name="sub_item_img[]"> <label class="custom-file-label"></label> </div> </div>');
+                $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
+            });
+
+            $("#subItemsWrapper").on("click", ".removeSubItem", function(e){
+                e.preventDefault();
+                var subitems = JSON.parse($('#modalItemEditorSubItems').val());
+                var itemName = $(this).parents(".input-group").find('input:eq(0)').val();
+                for (let [i, subitem] of subitems.entries()) {
+                    if (subitem.Name == itemName) {
+                        subitems.splice(i, 1);
+                        break;
+                    }
+                }
+
+                $(this).parents(".input-group").remove();
+                $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
+            });
+        }
+    </script>
 @stop

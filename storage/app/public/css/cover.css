@@ -811,3 +811,11 @@ div.clouds:before {
 .custom-file-label {
     overflow: hidden;
 }
+
+.spending-highlight {
+    background-color: #edf3fa;
+    padding: 15px;
+    border-radius: .25rem;
+    margin: 0;
+    /*color: #6c757d;*/
+}

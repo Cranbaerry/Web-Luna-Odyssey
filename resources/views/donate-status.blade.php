@@ -37,12 +37,12 @@
 
             <div class="subtitle">Transaction Details</div>
             <div class="article" style="text-indent: 0;">HATI - HATI Penipuan yang mengatasnamakan {{ Config::get('app.name') }}, semua informasi / media pembayaran kami hanya yang tersedia di website ini, silahkan laporkan apabila menemukan indikasi penipuan yang mengatasnamakan {{ Config::get('app.name') }} ke administrator.</div>
-            <div class="form-group row">
-                <label for="staticTID" class="col-sm-2 col-form-label">Transaction ID</label>
-                <div class="col">
-                    <input type="text" readonly class="form-control-plaintext" id="staticTID" value=" {{ $invoice->transaction_id }}">
-                </div>
-            </div>
+{{--            <div class="form-group row">--}}
+{{--                <label for="staticTID" class="col-sm-2 col-form-label">Transaction ID</label>--}}
+{{--                <div class="col">--}}
+{{--                    <input type="text" readonly class="form-control-plaintext" id="staticTID" value=" {{ $invoice->transaction_id }}">--}}
+{{--                </div>--}}
+{{--            </div>--}}
 
             <div class="form-group row">
                 <label for="staticTID" class="col-sm-2 col-form-label">Reference ID</label>

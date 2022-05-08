@@ -16,8 +16,6 @@
         @endif
 
         <div class="col col-lg-3 col-md-4 col-sm-5 mb-2">
-
-
             <div class="nav flex-column nav-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 @if($showTopUp || Helper::isAdmin())
                     <a class="nav-link nav-rank-item d-flex {{ $showTopUp ? 'active':  null}}" id="v-pills-topup-tab" data-toggle="pill" href="#v-topup-guild" role="tab" aria-controls="v-topup-guild" aria-selected="{{ $showTopUp ? 'true' : 'false'}}">
@@ -45,10 +43,9 @@
                 </a>
             </div>
         </div>
+
         <div class="col col-lg-9 col-md-8 col-sm-7">
             <div class="tab-content" id="v-pills-tabContent">
-
-
                 <div class="tab-pane fade show {{ $showTopUp ? 'active':  null}}" id="v-topup-guild" role="tabpanel" aria-labelledby="v-pills-topup-tab">
                     <nav>
                         <div class="row nav nav-tabs" id="nav-tab" role="tablist">

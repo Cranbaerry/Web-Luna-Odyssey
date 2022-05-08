@@ -635,6 +635,42 @@ class AdminController extends Controller
 
                 $request->session()->flash('status', 'Task was successful');
                 return redirect()->back();
+            case 'tiered':
+                $request->session()->flash('tab', 'tiered');
+                $request->validate([
+                    'tiered_spender_start' => ['required', 'date'],
+                    'tiered_spender_end' => ['required', 'date'],
+                    'tiered_spender_title' => ['required'],
+                ]);
+
+                $data = $request->except('_token', 'mode');
+                $save = [];
+
+                foreach ($data as $key => $value) {
+                    $setting = WebSettings::where('data', $key)->first();
+
+                    if ($setting == null)
+                        return redirect()->back()->withErrors(['msg' => sprintf('Column %s is not found in the database.', $key)]);
+
+                    if ($setting->value == $request->$key)
+                        continue;
+
+                    switch($key) {
+                        case 'tiered_spender_title':
+                            $setting->value = $request->$key;
+                            break;
+                        case 'tiered_spender_start':
+                        case 'tiered_spender_title':
+                            $setting->value = (string) strtotime($request->$key);
+                            break;
+                    }
+
+                    array_push($save, $setting);
+                }
+                foreach ($save as $field) $field->save();
+
+                $request->session()->flash('status', 'Task was successful');
+                return redirect()->back();
             default:
                 die("Unknown mode");
         }

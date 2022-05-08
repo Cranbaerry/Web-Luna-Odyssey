@@ -35,6 +35,6 @@ class ItemLog extends Model
     /**
      * @var array
      */
-    protected $fillable = ['userid', 'itemid', 'name', 'quantity', 'price', 'total', 'date_purchased'];
+    protected $fillable = ['userid', 'itemid', 'name', 'quantity', 'price', 'total', 'date_purchased', 'is_reward', 'tier_id'];
 
 }

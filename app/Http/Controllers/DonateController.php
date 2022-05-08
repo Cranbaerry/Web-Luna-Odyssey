@@ -320,7 +320,7 @@ class DonateController extends DuitkuBaseController
     {
         $invoice = Invoice::where('transaction_id', $orderId)->first();
         if (!$invoice) return;
-        $invoice->status_code = '00';
+            $invoice->status_code = '00';
         $invoice->save();
 
         $partner = Partner::find($invoice->referral_code);

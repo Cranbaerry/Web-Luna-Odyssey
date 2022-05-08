@@ -39,11 +39,8 @@ class User extends Authenticatable
     // LARAVEL 8 BUG WORKAROUND
     // https://stackoverflow.com/questions/32422593/laravel-belongsto-relationship-with-different-databases-not-working
     public function __construct(array $attributes = []) {
-
-
         $this->table = env('DB_MEMBER') . '.dbo.' . $this->table;
         parent::__construct($attributes);
-
     }
 
     /**
