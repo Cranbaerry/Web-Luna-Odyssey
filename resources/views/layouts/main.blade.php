@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
 
     <!-- Custom styles for this template -->
-    <link href="{{ asset("storage/css/cover.css") }} " rel="stylesheet">
-    <link href="{{ asset("storage/css/tagsinput.css") }} " rel="stylesheet">
-    <link href="{{ asset("storage/css/json-viewer.css") }} " rel="stylesheet">
+    <link href="{{ asset("storage/css/cover.css") }}" rel="stylesheet">
+    <link href="{{ asset("storage/css/tagsinput.css") }}" rel="stylesheet">
+    <link href="{{ asset("storage/css/json-viewer.css") }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ asset("storage/css/jquery.stepProgressBar.css") }}">

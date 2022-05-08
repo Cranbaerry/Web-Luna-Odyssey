@@ -242,7 +242,7 @@
                                                 <input type="radio" class="custom-control-input" id="reward-id-{{ $reward->id }}" name="reward_id" value="{{ $reward->id }}">
                                                 <label class="custom-control-label" for="reward-id-{{ $reward->id }}" data-toggle="tooltip" data-placement="top" title="{{ $reward->name }}">
 
-                                                    <img src="{{ $reward->image_link }}" alt="#" class="img-fluid pt-1">
+                                                    <img src="{{ asset("storage/" . $reward->image_link) }}" alt="#" class="img-fluid pt-1">
 {{--                                                    <div class="card-body" style="background-color: #6c757d; padding: 5px; color: white;">--}}
 {{--                                                        <h5 class="card-title card-shop-title">{{ $reward->name }}</h5>--}}
 {{--                                                    </div>--}}
@@ -303,6 +303,15 @@
                         $('#step-progressbar-1').stepProgressBar('setCurrentValue', {{ $freeRewards->topUpAccumulation }});
                     }
                 });
+
+
+                @foreach ($freeRewards->tiers as $index => $tier)
+                    @if(!$tier->claimed && $freeRewards->topUpAccumulation >= $tier->goal)
+                        $('#pills-tier{{$index+1}}-tab').tab('show');
+                        @break
+                    @endif
+                @endforeach
+
             });
         }
     </script>

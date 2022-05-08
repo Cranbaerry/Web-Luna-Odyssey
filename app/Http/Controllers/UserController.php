@@ -101,7 +101,7 @@ class UserController extends Controller
             //table[,column[,ignore value[,ignore column[,where column,where value]...]]]
             'tier_id' => ['required', 'exists:App\Models\Tier,id',
                 Rule::unique(app(ItemLog::Class)->getTable())->where(function ($query) use ($request) {
-                    $query->where('userid', auth()->user()->id_idx)->where('tier_id', $request->tier_id);
+                    return $query->where('userid', auth()->user()->id_idx)->where('tier_id', $request->tier_id);
                 })
             ],
             'reward_id' => ['required', 'exists:App\Models\TierReward,id']

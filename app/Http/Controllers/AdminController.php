@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ItemMallExport;
+use App\Http\Helper;
 use App\Models\Invoice;
 use App\Models\Item;
+use App\Models\ItemLog;
 use App\Models\Partner;
+use App\Models\Tier;
+use App\Models\TierReward;
 use Illuminate\Http\Request;
 use App\Models\WebSettings;
 use App\Models\ItemMall;
@@ -44,7 +48,14 @@ class AdminController extends Controller
         $activities->orderByDesc('created_at');
         $activities = $activities->paginate(5, ['*'], 'page_activity');
 
-        if ($request->has('page_invoice')) {
+        $freeRewards = new \stdClass();
+        $freeRewards->tiers = Tier::where('active', 1)->orderBy('goal')->get();
+        $freeRewards->topUpAccumulation = Invoice::where([
+            ['user_id', '=', auth()->user()->id_idx],
+            ['status_code', '=', '00']
+        ])->whereBetween('date_updated', [date("Y-m-d", time()), date("Y-m-d", Helper::getSetting('tiered_spender_end'))])->sum('price');
+
+        if ($request->has('page_invoice') && !$request->session()->has('tab')) {
             session()->flash('tab', 'transactions');
             if ($transactions->count() === 0) {
                 if (!is_null($transactions->previousPageUrl())) {
@@ -53,7 +64,7 @@ class AdminController extends Controller
             }
         }
 
-        if ($request->has('page_itemmall')) {
+        if ($request->has('page_itemmall') && !$request->session()->has('tab')) {
             session()->flash('tab', 'itemmall');
             if ($itemMall->count() === 0) {
                 if (!is_null($itemMall->previousPageUrl())) {
@@ -62,7 +73,7 @@ class AdminController extends Controller
             }
         }
 
-        if ($request->has('page_partner')) {
+        if ($request->has('page_partner') && !$request->session()->has('tab')) {
             session()->flash('tab', 'referrals');
             if ($referrals->count() === 0) {
                 if (!is_null($referrals->previousPageUrl())) {
@@ -71,7 +82,7 @@ class AdminController extends Controller
             }
         }
 
-        if ($request->has('page_redeem')) {
+        if ($request->has('page_redeem') && !$request->session()->has('tab')) {
             session()->flash('tab', 'redeem');
             if ($redeems->count() === 0) {
                 if (!is_null($redeems->previousPageUrl())) {
@@ -80,7 +91,7 @@ class AdminController extends Controller
             }
         }
 
-        if ($request->has('page_activity')) {
+        if ($request->has('page_activity') && !$request->session()->has('tab')) {
             session()->flash('tab', null);
             if ($activities->count() === 0) {
                 if (!is_null($activities->previousPageUrl())) {
@@ -89,7 +100,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin', compact('transactions', 'itemMall', 'referrals', 'redeems', 'activities'));
+        return view('admin', compact('transactions', 'itemMall', 'referrals', 'redeems', 'activities', 'freeRewards'));
     }
 
     public function post(Request $request)
@@ -671,6 +682,131 @@ class AdminController extends Controller
 
                 $request->session()->flash('status', 'Task was successful');
                 return redirect()->back();
+            case 'tiereditor':
+                $request->session()->flash('tab', 'tiered');
+                $request->validate([
+                    'action' => ['required'],
+                ]);
+
+                CauserResolver::setCauser(Auth::user());
+
+                switch($request->action) {
+                    case 0:
+                        $request->validate([
+                            'id' => ['required', 'integer', 'exists:App\Models\Tier,id'],
+                        ]);
+
+                        $tier = Tier::find($request->id);
+                        $tier->active = false;
+                        $tier->save();
+                        $request->session()->flash('status', sprintf('Tier for %s IDR was successfully deleted!', number_format($tier->goal)));
+                        return redirect()->back();;
+                        break;
+                    case 1:
+                        $request->validate([
+                            'goal' => [
+                                'required',
+                                'integer',
+                                Rule::unique(app(Tier::Class)->getTable())->where(function ($query) use ($request) {
+                                    return $query->where('goal', $request->goal)->where('active', 1);
+                                })
+                            ],
+                            'sub_item_id.*' => ['integer'],
+                            'sub_item_name.*' => ['required'],
+                            'sub_item_quantity.*' => ['required', 'integer'],
+                            'sub_item_img' => ['required', 'array'],
+                            'sub_item_img.*' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg'],
+                        ]);
+
+                        $tier = Tier::create([
+                            'goal' => $request->goal,
+                            'active' => 1,
+                        ]);
+
+                        $files = $request->file('sub_item_img');
+                        for ($i = 0; $i < count($request->sub_item_name); $i++) {
+                            $storagePath = Storage::disk('public')->putFile('img/store', $files[$i]);
+                            TierReward::create([
+                                'name' => $request->sub_item_name[$i],
+                                'tierId' => $tier->id,
+                                'itemId' => $request->sub_item_id[$i],
+                                'quantity' => $request->sub_item_quantity[$i],
+                                'image_link' => $storagePath,
+                            ]);
+                        }
+
+                        $request->session()->flash('status', 'Task was successful!');
+                        return response()->json([
+                            'message' => 'success',
+                        ]);
+                    case 2:
+                        $request->validate([
+                            'tierid' => ['required', 'exists:App\Models\Tier,id'],
+                            'goal' => [
+                                'required',
+                                'integer',
+                                Rule::unique(app(Tier::Class)->getTable(), 'goal')
+                                    ->where(function ($query) use ($request) {
+                                        return $query->where('active', 1);
+                                    })
+                                    ->ignore($request->tierid, 'id'),
+                            ],
+                            'sub_item_id.*' => ['integer'],
+                            'sub_item_name.*' => ['required'],
+                            'sub_item_quantity.*' => ['required', 'integer'],
+                            'sub_item_img' => ['nullable', 'array'],
+                            'sub_item_img.*' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg'],
+                        ]);
+
+                        $tier = Tier::find($request->tierid);
+                        $tier->goal = $request->goal;
+
+                        $rewards = collect(json_decode($request->rewarditems));
+                        $files = $request->file('sub_item_img');
+
+                        // apply deletion check
+                        foreach ($tier->rewards as $rewardDb) {
+                            if (!$rewards->contains('rewardId', $rewardDb->id)) {
+                                $rewardDb->delete();
+                            }
+                        }
+
+                        foreach($rewards as $index => $rewardObj) {
+                            if (!empty($rewardObj->rewardId)) {
+                                // update existing
+                                $reward = TierReward::find($rewardObj->rewardId);
+                                $reward->name = $rewardObj->itemName;
+                                $reward->tierId = $rewardObj->tierId;
+                                $reward->itemId = $rewardObj->itemId;
+                                $reward->quantity = $rewardObj->quantity;
+                                if ($request->hasFile('sub_item_img.' .  $index)) {
+                                    $storagePath = Storage::disk('public')->putFile('img/store', $files[$index]);
+                                    $reward->image_link = $storagePath;
+                                }
+                                $reward->save();
+                            } else {
+                                // insert new
+                                $storagePath = Storage::disk('public')->putFile('img/store', $files[$index]);
+                                TierReward::create([
+                                    'name' => $rewardObj->itemName,
+                                    'tierId' => $rewardObj->tierId,
+                                    'itemId' => $rewardObj->itemId,
+                                    'quantity' => $rewardObj->quantity,
+                                    'image_link' => $storagePath,
+                                ]);
+                            }
+                        }
+
+                        $tier->save();
+                        $request->session()->flash('status', 'Task was successful!');
+                        return response()->json([
+                            'message' => 'success',
+                        ]);
+                    case 3:
+                        TierReward::truncate();
+                        $request->session()->flash('status', 'Task was successful!');
+                        return redirect()->back();;
+                }
             default:
                 die("Unknown mode");
         }

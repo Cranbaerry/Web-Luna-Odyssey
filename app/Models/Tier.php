@@ -14,7 +14,7 @@ class Tier extends Model
     use LogsActivity;
     protected $primaryKey = 'id';
 
-    protected static $recordEvents = ['created'];
+    protected static $recordEvents = ['created', 'updated'];
     public function getActivitylogOptions(): LogOptions
     {
         if (!Helper::isAdmin()) {
@@ -23,15 +23,11 @@ class Tier extends Model
 
         return LogOptions::defaults()
             ->useLogName('admin')
-            //->setDescriptionForEvent(fn(string $eventName) => "Item has been {$eventName}")
+            ->setDescriptionForEvent(function (string $eventName) {
+                return "Tier list has been {$eventName}";
+            })->logOnly(['*']);
             //->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
-
-    public function tapActivity(Activity $activity, string $eventName)
-    {
-        $model = $activity['subject'];
-        $activity->description = "Tier ID {$model->id} has been {$eventName}";
+            //->dontSubmitEmptyLogs();
     }
 
     /**

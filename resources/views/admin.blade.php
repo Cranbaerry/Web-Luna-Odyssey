@@ -62,6 +62,22 @@
                     $('#modalBtn').addClass('btn-danger');
                     $('#modalConfirmation').modal('show');
                     break;
+                case 'tier_delete':
+                    $('#modalMode').val('tiereditor');
+                    $('#modalAction').val(0);
+                    $('#modalText').html('Are you sure you want to delete the tier?');
+                    $('#modalBtn').html('Delete');
+                    $('#modalBtn').addClass('btn-danger');
+                    $('#modalConfirmation').modal('show');
+                    break;
+                case 'reset_tier':
+                    $('#modalMode').val('tiereditor');
+                    $('#modalAction').val(3);
+                    $('#modalText').html('Are you sure you want to reset all tier?<br/>This will remove all tier rewards.');
+                    $('#modalBtn').html('Reset');
+                    $('#modalBtn').addClass('btn-danger');
+                    $('#modalConfirmation').modal('show');
+                    break;
                 case 'redeem_delete':
                     $('#modalMode').val('redeemeditor');
                     $('#modalAction').val(0);
@@ -278,6 +294,55 @@
             }
         }
 
+        function showTierEditor(el, mode) {
+            var item = jQuery(el);
+            $('#modalTierEditorMode').val(mode);
+            $('#modalTierEditorErrorWrapper').hide();
+            resetRewardsItems();
+            switch(mode) {
+                case 0:
+                    break;
+                case 1:
+                    $('#modalTierEditorTitle').html('Add Tier');
+                    $('#modalTierEditorBtn').html('Submit');
+                    $('#modalTierEditorId').val('');
+                    $("#modalTierEditorName").prop('disabled', false);
+                    $('#modalTierEditorName').val('');
+                    $('#modalTierEditorCode').val('');
+                    $('#modalTierEditorMoney').val(0);
+                    $('#modalTierEditor').modal('show');
+                    break;
+                case 2:
+                    $('#modalTierEditorTitle').html('Edit Tier');
+                    $('#modalTierEditorBtn').html('Save Changes');
+                    $('#modalTierEditorId').val(item.data('id'));
+                    $('#modalTierEditorMoney').val(item.data('goal'));
+
+                    var subitems = item.data('rewards');
+                    if (subitems.length > 0) {
+                        var index = 0;
+                        for (const entry in subitems) {
+                            if (index == 0) {
+                                console.log();
+                                $('.rewardItem:eq(0)').children('.input-group:eq(0)').children('input:eq(0)').val(subitems[entry].name);
+                                $('.rewardItem:eq(0)').children('.input-group:eq(0)').children('input:eq(1)').val(subitems[entry].itemId);
+                                $('.rewardItem:eq(0)').children('.input-group:eq(0)').children('input:eq(2)').val(subitems[entry].id);
+                                $('.rewardItem:eq(0)').children('.input-group:eq(1)').children('input:eq(0)').val(subitems[entry].quantity);
+                                $('.rewardItem:eq(0)').children('.input-group:eq(2)').children('.custom-file').children('.custom-file-label').html(subitems[entry].image_link);
+                            } else {
+                                $("#rewards").append('<div class="rewardItem"><hr class="hr-text" data-content="Reward #' + (index + 1) + '"> <div class="input-group mb-2"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Item Name</span> </div> <input type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off" value="'+subitems[entry].name+'"> <div class="input-group-prepend ml-2"> <span class="input-group-text" id="inputGroup-sizing-default">Item ID</span> </div> <input type="text" name="sub_item_id[]" class="form-control m-input" placeholder="Item ID" autocomplete="off" value="'+subitems[entry].itemId+'"><input type="hidden" name="sub_item_reward_id[]" value="'+subitems[entry].id+'"> </div> <div class="input-group mb-2"> <input data-prefix="Quantity" type="number" name="sub_item_quantity[]" class="form-control m-input h-auto" autocomplete="off" value="'+subitems[entry].quantity+'" min="0" step="1"> </div> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Image File</span> </div> <div class="custom-file" style="padding-left: 60px;"> <input type="file" class="custom-file-input" name="sub_item_img[]" placeholder="Image File"> <label class="custom-file-label">'+subitems[entry].image_link+'</label> </div> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div></div></div>');
+                                //$("#subItems").append('<div class="input-group mt-2"> <input data-id="'+ subitems[entry].id + '" onchange="subItemsOnChange(this)" type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off" value="'+ subitems[entry].Name +'"> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div> <div class="custom-file" style="margin-left: 7px; padding-left: 60px;"> <input data-id="'+ subitems[entry].id + '" onchange="subItemsOnChange(this)"  type="file" class="custom-file-input" name="sub_item_img[]"> <label class="custom-file-label">'+ basename(subitems[entry].Image) +'</label> </div> </div>');
+                            }
+                            index++;
+                        }
+                        $("input[type='number']").inputSpinner();
+                    }
+
+                    $('#modalTierEditor').modal('show');
+                    break;
+            }
+        }
+
         function submitRedeemEditor(el) {
             var item = jQuery(el);
             $('#modalRedeemEditorErrorWrapper').fadeOut();
@@ -342,6 +407,60 @@
                     }
 
                     $('#modalPartnerEditorErrorWrapper').fadeIn();
+                }
+            });
+        }
+
+        function submitTierEditor(el) {
+            let rewardsJson = [];
+            $('.rewardItem').each(function(i, obj) {
+                let itemName = $(this).children('.input-group:eq(0)').children('input:eq(0)').val();
+                let itemId = $(this).children('.input-group:eq(0)').children('input:eq(1)').val();
+                let rewardId = $(this).children('.input-group:eq(0)').children('input:eq(2)').val();
+                let quantity = $(this).children('.input-group:eq(1)').children('input:eq(0)').val();
+                let fileName = $(this).children('.input-group:eq(2)').children('.custom-file').children('input').val();
+
+                rewardsJson.push({
+                    "tierId": $('#modalTierEditorId').val(),
+                    "rewardId": rewardId,
+                    "itemName": itemName,
+                    "itemId": itemId,
+                    "quantity": quantity,
+                    "fileName": fileName,
+                });
+            });
+
+            $('#modalTierEditorRewardItems').val(JSON.stringify(rewardsJson));
+
+            var item = jQuery(el);
+            $('#modalTierEditorErrorWrapper').fadeOut();
+            item.prop('disabled', true);
+
+            $.ajax({
+                url: "{{ route('admin',[],false) }}",
+                method: "POST",
+                dataType: 'json',
+                data: new FormData($("#modalTierEditorForm")[0]),
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    if (data.message === 'success') {
+                        location.reload();
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    item.prop('disabled', false);
+                    $('#modalTierEditorErrorMsg').html(xhr.responseJSON.message);
+                    $('#modalTierEditorErrorList').html('');
+                    if (xhr.responseJSON.hasOwnProperty('errors')) {
+                        $.each(xhr.responseJSON.errors, function (key, data) {
+                            var listItem = $("<li/>");
+                            listItem.html(data[0]);
+                            listItem.appendTo("#modalTierEditorErrorList");
+                        })
+                    }
+
+                    $('#modalTierEditorErrorWrapper').fadeIn();
                 }
             });
         }
@@ -448,6 +567,10 @@
                 .fail( function(xhr, textStatus, errorThrown) {
                     item.prop('disabled', false);
                 });
+        }
+
+        function resetRewardsItems() {
+            $("#rewards").html('<div class="rewardItem"> <hr class="hr-text" data-content="Reward #1"> <div class="input-group mb-2"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Item Name</span> </div> <input type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off"> <div class="input-group-prepend ml-2"> <span class="input-group-text" id="inputGroup-sizing-default">Item ID</span> </div> <input type="text" name="sub_item_id[]" class="form-control m-input" placeholder="Item ID" autocomplete="off"> <input type="hidden" name="sub_item_reward_id[]"> </div> <div class="input-group mb-2"> <input data-prefix="Quantity" type="number" name="sub_item_quantity[]" class="form-control m-input h-auto" autocomplete="off" value="1" min="0" step="1"> </div> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Image File</span> </div> <div class="custom-file" style="padding-left: 60px;"> <input type="file" class="custom-file-input" name="sub_item_img[]" placeholder="Image File"> <label class="custom-file-label">No file chosen</label> </div> <div class="input-group-append"> <button id="addRewardItem" type="button" class="btn btn-success">+</button> </div> </div> </div>');
         }
 
         function resetSubItems() {
@@ -576,6 +699,88 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-primary" onclick="submitPartnerEditor(this);" id="modalPartnerEditorBtn">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalTierEditor" tabindex="-1" role="dialog" aria-hidden="true" style="min-width:90%">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <form id="modalTierEditorForm">
+                    @csrf
+                    <input type="hidden" name="mode" value="tiereditor">
+                    <input type="hidden" name="action" value="" id="modalTierEditorMode">
+                    <input type="hidden" name="tierid" value="" id="modalTierEditorId">
+                    <input type="hidden" name="rewarditems" value="[]" id="modalTierEditorRewardItems">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTierEditorTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalTierEditorErrorWrapper">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong id="modalTierEditorErrorMsg">{{ __('Whoops! Something went wrong.') }}</strong>
+                                <div id="modalTierEditorErrorList"></div>
+                                <button type="button" class="close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Goal Money</label>
+                            <div class="col-sm-10">
+                                <input name="goal" id="modalTierEditorMoney" class="form-control h-auto" type="number" value="0" min="0" step="100000"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="rewardsWrapper">
+                            <label class="col-sm-2 col-form-label">Rewards</label>
+                            <div class="col-sm-10" id="rewards">
+                                <div class="rewardItem">
+                                    <hr class="hr-text" data-content="Reward #1">
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroup-sizing-default">Item Name</span>
+                                        </div>
+                                        <input type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off">
+
+                                        <div class="input-group-prepend ml-2">
+                                            <span class="input-group-text" id="inputGroup-sizing-default">Item ID</span>
+                                        </div>
+                                        <input type="text" name="sub_item_id[]" class="form-control m-input" placeholder="Item ID" autocomplete="off">
+                                        <input type="hidden" name="sub_item_reward_id[]">
+                                    </div>
+
+                                    <div class="input-group mb-2">
+                                        <input data-prefix="Quantity" type="number" name="sub_item_quantity[]" class="form-control m-input h-auto" autocomplete="off" value="1" min="0" step="1">
+                                    </div>
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroup-sizing-default">Image File</span>
+                                        </div>
+                                        <div class="custom-file" style="padding-left: 60px;">
+                                            <input type="file" class="custom-file-input" name="sub_item_img[]" placeholder="Image File">
+                                            <label class="custom-file-label">No file chosen</label>
+                                        </div>
+
+                                        <div class="input-group-append">
+                                            <button id="addRewardItem" type="button" class="btn btn-success">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="submitTierEditor(this);" id="modalTierEditorBtn">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -922,6 +1127,9 @@
                                                 @case('App\Models\Redeem')
                                                 <td class="align-middle"><b>Code:</b> {{ $data->subject_id }}</td>
                                                 @break
+                                                @case('App\Models\Tier')
+                                                <td class="align-middle"><b>Tier ID:</b> {{ $data->subject_id }}</td>
+                                                @break
                                                 @default
                                                 @if($data->event == 'download')
                                                     <td class="align-middle"><b>Transaction Report</b></td>
@@ -933,7 +1141,8 @@
                                             <td class="align-middle">{{ $data->created_at }}</td>
                                             <td class="d-flex justify-content-center align-middle">
                                                 <button type="button" class="btn btn-secondary mr-1" style="padding: .375rem .75rem;"
-                                                        onclick="showActivityDetails(this, '{{ $data->properties }}')">
+                                                        data-raw="{!! htmlspecialchars(json_encode($data->properties), ENT_QUOTES, 'UTF-8') !!}"
+                                                        onclick="showActivityDetails(this, this.dataset.raw)">
 
                                                     <i class="fas fa-search"></i></button>
                                             </td>
@@ -1656,6 +1865,70 @@
                             </div>
                         </div>
                     </form>
+
+                    <hr class="my-4">
+
+                    <div class="form-group">
+                        <div class="d-flex w-100">
+                            <div class="row">
+                                <div class="col-12"><div class="subtitle" style="font-size: 1.2rem;">Tier Editor</div></div>
+                                <div class="col-12"><div class="article pb-3" style="text-indent: 0;">A list of tier rewards.</div></div>
+                            </div>
+                            <div class=" ml-auto" style="padding-left: 50px;">
+                                <button class="btn btn-primary" onclick="showTierEditor(this, 1);">
+                                    Add Tier
+                                </button>
+
+                                <button class="btn btn-danger" onclick="showConfirmation(this, 'reset_tier')">
+                                    Reset All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table pt-1">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Tier</th>
+                                    <th scope="col">Goal</th>
+                                    <th scope="col">Rewards</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($freeRewards->tiers as $index => $data)
+                                    <tr>
+                                        <td class="align-middle text-center">{{ $index + 1 }}</td>
+                                        <td class="align-middle">Rp. {{ number_format($data->goal) }}</td>
+                                        <td class="align-middle">
+                                            @foreach($data->rewards as $reward)
+                                                <span class="badge badge-secondary">{{ $reward->name }}</span>&nbsp;
+                                            @endforeach
+                                        </td>
+
+                                        <td class="d-flex justify-content-center align-middle">
+                                            <button type="button" class="btn btn-secondary mr-1" style="padding: .375rem .75rem;"
+                                                    data-id="{{ $data->id }}"
+                                                    data-goal="{{ $data->goal }}"
+                                                    data-rewards="{{ $data->rewards->toJson() }}"
+                                                    onclick="showTierEditor(this, 2)">
+                                                <i class="far fa-edit"></i></button>
+
+                                            <button type="button" class="btn btn-danger ml-1" style="padding: .375rem .75rem;"
+                                                    data-id="{{ $data->id }}"
+                                                    onclick="showConfirmation(this, 'tier_delete')">
+                                                <i class="far fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-center w-100">
+                            {!! $transactions->links() !!}
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -1713,6 +1986,7 @@
                 subitems.push({"MallItemID": $('#modalItemEditorId').val(),"Name":"","Image":""});
                 $("#subItems").append('<div class="input-group mt-2"> <input onfocus="this.oldvalue = this.value;" onchange="subItemsOnChange(this)"  type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off"> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div> <div class="custom-file" style="margin-left: 7px; padding-left: 60px;"> <input onchange="subItemsOnChange(this)" type="file" class="custom-file-input" name="sub_item_img[]"> <label class="custom-file-label"></label> </div> </div>');
                 $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
+                $("input[type='number']").inputSpinner();
             });
 
             $("#subItemsWrapper").on("click", ".removeSubItem", function(e){
@@ -1728,6 +2002,26 @@
 
                 $(this).parents(".input-group").remove();
                 $('#modalItemEditorSubItems').val(JSON.stringify(subitems));
+            });
+
+            let tierCount = 1;
+
+            $("#rewardsWrapper").on("click", "#addRewardItem", function(e){
+                tierCount++;
+                e.preventDefault();
+                $("#rewards").append('<div class="rewardItem"><hr class="hr-text" data-content="Reward #' + tierCount + '"> <div class="input-group mb-2"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Item Name</span> </div> <input type="text" name="sub_item_name[]" class="form-control m-input" placeholder="Item Name" autocomplete="off"> <div class="input-group-prepend ml-2"> <span class="input-group-text" id="inputGroup-sizing-default">Item ID</span> </div> <input type="text" name="sub_item_id[]" class="form-control m-input" placeholder="Item ID" autocomplete="off"><input type="hidden" name="sub_item_reward_id[]"> </div> <div class="input-group mb-2"> <input data-prefix="Quantity" type="number" name="sub_item_quantity[]" class="form-control m-input h-auto" autocomplete="off" value="1" min="0" step="1"> </div> <div class="input-group"> <div class="input-group-prepend"> <span class="input-group-text" id="inputGroup-sizing-default">Image File</span> </div> <div class="custom-file" style="padding-left: 60px;"> <input type="file" class="custom-file-input" name="sub_item_img[]" placeholder="Image File"> <label class="custom-file-label">No file chosen</label> </div> <div class="input-group-append"> <button type="button" class="btn btn-danger removeSubItem">-</button> </div></div></div>');
+                $('.hr-text').each(function(i, obj) {
+                    $(this).attr('data-content', 'Reward #' + (i + 1));
+                });
+            });
+
+            $("#rewardsWrapper").on("click", ".removeSubItem", function(e){
+                e.preventDefault();
+
+                $(this).parents(".rewardItem").remove();
+                $('.hr-text').each(function(i, obj) {
+                    $(this).attr('data-content', 'Reward #' + (i + 1));
+                });
             });
         }
     </script>
