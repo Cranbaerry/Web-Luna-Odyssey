@@ -28,12 +28,12 @@ class ItemMallExport implements FromCollection, WithHeadings,
     */
     public function collection()
     {
-        return ItemLog::all();
+        return ItemLog::where('is_reward', 0)->get();
     }
 
     public function headings(): array
     {
-        return ["Transaction ID", "User ID", "User Name", "Item ID", "Item Name", "Quantity", "Item Price", "Total Price", "Date Purchased"];
+        return ["Transaction ID", "User ID", "User Name", "Item ID", "Item Name",  "Category", "Quantity", "Item Price", "Total Price", "Date Purchased"];
     }
 
     public function map($row): array{
@@ -43,6 +43,7 @@ class ItemMallExport implements FromCollection, WithHeadings,
             $row->itemid,
             User::find($row->userid)->id_loginid,
             $row->name,
+            $row->getCategory(),
             $row->quantity,
             $row->price,
             $row->total,
@@ -57,9 +58,9 @@ class ItemMallExport implements FromCollection, WithHeadings,
 //            'H' => '#,##0.00 [$IDR]_-',
 //            'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
 //            'J' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'G' => '#,##0.00 [$IDR]_-',
             'H' => '#,##0.00 [$IDR]_-',
-            'I' => 'm/d/y h:mm AM/PM',
+            'I' => '#,##0.00 [$IDR]_-',
+            'J' => 'm/d/y h:mm AM/PM',
         ];
     }
 
@@ -67,8 +68,9 @@ class ItemMallExport implements FromCollection, WithHeadings,
     {
         return [
             'E' => 50,
-            'G' => 20,
+            'F' => 30,
             'H' => 20,
+            'I' => 20,
         ];
     }
 }

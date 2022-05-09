@@ -35,6 +35,22 @@ class ItemLog extends Model
     /**
      * @var array
      */
-    protected $fillable = ['userid', 'itemid', 'name', 'quantity', 'price', 'total', 'date_purchased', 'is_reward', 'tier_id'];
+    protected $fillable = ['userid', 'itemid', 'name', 'quantity', 'price', 'total', 'date_purchased', 'is_reward', 'tier_id', 'category'];
 
+    public function getCategory(){
+        switch ($this->category){
+            case 1:
+                return 'Equipment';
+            case 2:
+                return 'Costume';
+            case 3:
+                return 'Accessories';
+            case 4:
+                return 'Consumables';
+            case 5:
+                return 'Back Gears';
+            case 6:
+                return 'Styles';
+        }
+    }
 }

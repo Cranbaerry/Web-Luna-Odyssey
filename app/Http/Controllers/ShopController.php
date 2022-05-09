@@ -55,6 +55,7 @@ class ShopController extends Controller
                 'quantity' => $request->qty,
                 'price' => $item->price,
                 'total' => $total,
+                'category' => $item->category,
             ]);
 
             Session::flash('item_purchased', $item->name);
