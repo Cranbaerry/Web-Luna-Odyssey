@@ -112,7 +112,7 @@
                                     <th scope="col">Reference</th>
                                     <th scope="col">Payment Method</th>
                                     <th scope="col" class="text-center">Price</th>
-                                    <th scope="col" class="text-center">Cash Points</th>
+                                    <th scope="col" class="text-center">Item</th>
                                     <th scope="col" class="text-center">Status</th>
                                 </tr>
                                 </thead>
@@ -124,7 +124,12 @@
                                         <td>{{ $data->getPaymentMethod() }}</td>
 
                                         <td class="text-center">Rp. {{ number_format($data->price) }}</td>
-                                        <td class="text-center">{{ number_format($data->cash_points) }}</td>
+                                        @if(!empty(App\Http\Controllers\DonateController::getPackageDetails($data->package)['item']))
+                                            <td class="text-center">{{ App\Http\Controllers\DonateController::getPackageDetails($data->package)['item']['name'] }}</td>
+                                        @else
+                                            <td class="text-center">{{ number_format($data->cash_points) }} CP</td>
+                                        @endif
+
 
                                         @switch($data->status_code)
                                             @case('00')

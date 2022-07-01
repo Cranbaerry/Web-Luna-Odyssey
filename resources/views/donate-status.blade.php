@@ -73,11 +73,20 @@
             </div>
 
             <div class="form-group row">
-                <label for="staticAm" class="col-sm-2 col-form-label">Amount</label>
+                <label for="staticAm" class="col-sm-2 col-form-label">Cash Points</label>
                 <div class="col">
-                    <input type="text" readonly class="form-control-plaintext" id="staticAm" value="{{ number_format($invoice->cash_points) }}">
+                    <input type="text" readonly class="form-control-plaintext" id="staticAm" value="{{ number_format($invoice->cash_points) }} CP">
                 </div>
             </div>
+
+            @if(!empty(App\Http\Controllers\DonateController::getPackageDetails($invoice->package)['item']))
+                <div class="form-group row">
+                    <label for="item" class="col-sm-2 col-form-label">Item</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext" id="item" value="{{ App\Http\Controllers\DonateController::getPackageDetails($invoice->package)['item']['name'] }}">
+                    </div>
+                </div>
+            @endif
 
             <div class="form-group row">
                 <label for="staticP" class="col-sm-2 col-form-label">Price</label>

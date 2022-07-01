@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Royryando\Duitku\Facades\Duitku;
@@ -15,67 +16,64 @@ use Helper;
 
 class DonateController extends DuitkuBaseController
 {
-    protected $packages;
+    public $packages;
 
     function __construct(array $attributes = [])
     {
         $this->packages = array();
+        $this->addPackage(200, 25000, 0);
+        $this->addPackage(500, 55000, 0);
+        $this->addPackage(1050, 105000, 0);
+        $this->addPackage(2100, 200000, 5);
+        $this->addPackage(3300, 300000, 10);
+        $this->addPackage(5500, 500000, 10);
+        $this->addPackage(8250, 750000, 10);
+        $this->addPackage(11500, 1000000, 15);
+        $this->addPackage(23000, 2000000, 15);
+        $this->addPackage(34500, 3000000, 15);
+        $this->addPackage(46000, 4000000, 15);
+        $this->addPackage(60000, 5000000, 20);
+        $this->addPackage(125000, 10000000, 25);
+        $this->addPackage(390000, 30000000, 30);
 
-        $this->packages[0]['CP'] = 200;
-        $this->packages[0]['price'] = 25000;
-        $this->packages[0]['bonus'] = 0;
+        $this->addPackage(0,15000,0, array (
+            'name' => 'Odyssey Adventure Package I',
+            'id' => 60000024,
+            'quantity' => 1
+        ));
+        $this->addPackage(0,70000,0, array (
+            'name' => 'Odyssey Adventure Package II',
+            'id' => 60000025,
+            'quantity' => 1
+        ));
+        $this->addPackage(0,250000,0, array (
+            'name' => 'Odyssey Adventure Package III',
+            'id' => 60000026,
+            'quantity' => 1
+        ));
 
-        $this->packages[1]['CP'] = 500;
-        $this->packages[1]['price'] = 55000;
-        $this->packages[1]['bonus'] = 0;
+    }
 
-        $this->packages[2]['CP'] = 1050;
-        $this->packages[2]['price'] = 105000;
-        $this->packages[2]['bonus'] = 0;
+    public static function getPackageDetails($id) {
+        $class = new DonateController();
+        return $class->packages[$id];
+    }
 
-        $this->packages[3]['CP'] = 2100;
-        $this->packages[3]['price'] = 200000;
-        $this->packages[3]['bonus'] = 5;
+    private function getPackageName($id) {
+        $package = $this->packages[$id];
+        if (empty($package['item']))
+            return sprintf('Top Up +%s', number_format($package['price']));
+        else
+            return sprintf('%s', $package['item']['name']);
+    }
 
-        $this->packages[4]['CP'] = 3300;
-        $this->packages[4]['price'] = 300000;
-        $this->packages[4]['bonus'] = 10;
-
-        $this->packages[5]['CP'] = 5500;
-        $this->packages[5]['price'] = 500000;
-        $this->packages[5]['bonus'] = 10;
-
-        $this->packages[6]['CP'] = 8250;
-        $this->packages[6]['price'] = 750000;
-        $this->packages[6]['bonus'] = 10;
-
-        $this->packages[7]['CP'] = 11500;
-        $this->packages[7]['price'] = 1000000;
-        $this->packages[7]['bonus'] = 15;
-
-        $this->packages[8]['CP'] = 23000;
-        $this->packages[8]['price'] = 2000000;
-        $this->packages[8]['bonus'] = 15;
-
-        $this->packages[9]['CP'] = 34500;
-        $this->packages[9]['price'] = 3000000;
-        $this->packages[9]['bonus'] = 15;
-
-        $this->packages[10]['CP'] = 46000;
-        $this->packages[10]['price'] = 4000000;
-        $this->packages[10]['bonus'] = 15;
-
-        $this->packages[11]['CP'] = 60000;
-        $this->packages[11]['price'] = 5000000;
-        $this->packages[11]['bonus'] = 20;
-
-        $this->packages[12]['CP'] = 125000;
-        $this->packages[12]['price'] = 10000000;
-        $this->packages[12]['bonus'] = 25;
-
-        $this->packages[13]['CP'] = 390000;
-        $this->packages[13]['price'] = 30000000;
-        $this->packages[13]['bonus'] = 30;
+    private function addPackage($CP, $price, $bonus = 0, $items = array()) {
+        array_push($this->packages, array (
+            'CP' => $CP,
+            'price' => $price,
+            'bonus' => $bonus,
+            'item' => $items,
+        ));
     }
 
     /**
@@ -176,7 +174,7 @@ class DonateController extends DuitkuBaseController
 
                 $this->onPaymentSuccess(
                     $invoice->transaction_id,
-                    sprintf('Top Up +%s', number_format($invoice->price)),
+                    $this->getPackageName($invoice->package),
                     $invoice->price,
                     $invoice->method,
                     null,
@@ -215,7 +213,7 @@ class DonateController extends DuitkuBaseController
                             ],
                         ],
                         'items' => [[
-                            'name' => sprintf('Top Up +%s', number_format($invoice->price)),
+                            'name' => $this->getPackageName($invoice->package),
                             'description' => 'In-game currency purchase.',
                             'unit_amount' => [
                                 'value' => $price,
@@ -244,7 +242,7 @@ class DonateController extends DuitkuBaseController
                     (string) $invoice->transaction_id,
                     $invoice->price,
                     $invoice->method,
-                    sprintf('Top Up +%s', number_format($invoice->price)),
+                    $this->getPackageName($invoice->package),
                     auth()->user()->id_loginid,
                     auth()->user()->id_email,
                     30);
@@ -265,7 +263,7 @@ class DonateController extends DuitkuBaseController
         if ($invoice && $invoice->user_id == auth()->user()->id_idx && $invoice->code != '00') {
             $this->onPaymentFailed(
                 $invoice->transaction_id,
-                sprintf('Top Up +%s', number_format($invoice->price)),
+                $this->getPackageName($invoice->package),
                 $invoice->price,
                 $invoice->method,
                 null,
@@ -289,10 +287,10 @@ class DonateController extends DuitkuBaseController
             $order = $provider->capturePaymentOrder($invoice->reference);
 
             // TODO: add log if 'status' is not present
-            if ($order['status'] === "COMPLETED") {
+            if (array_key_exists("status", $order) && $order['status'] === "COMPLETED") {
                 $this->onPaymentSuccess(
                     $invoice->transaction_id,
-                    sprintf('Top Up +%s', number_format($invoice->price)),
+                    $this->getPackageName($invoice->package),
                     $invoice->price,
                     $invoice->method,
                     null,
@@ -320,7 +318,8 @@ class DonateController extends DuitkuBaseController
     {
         $invoice = Invoice::where('transaction_id', $orderId)->first();
         if (!$invoice) return;
-            $invoice->status_code = '00';
+        if ($invoice->status_code == 00) return;
+        $invoice->status_code = '00';
         $invoice->save();
 
         $partner = Partner::find($invoice->referral_code);
@@ -333,6 +332,17 @@ class DonateController extends DuitkuBaseController
         $user->UserPointMall += $invoice->cash_points;
         $user->UserPointMall += $invoice->bonus_points;
         $user->save();
+
+        $item = $this->packages[$invoice->package]['item'];
+        if (!empty($item)) {
+            Item::create([
+                'CHARACTER_IDX' => 0,
+                'ITEM_IDX' => $item['id'],
+                'ITEM_POSITION' => 0,
+                'ITEM_DURABILITY' => $item['quantity'],
+                'ITEM_SHOPIDX' => $invoice->user_id,
+            ]);
+        }
     }
 
     public function onPaymentFailed(string $orderId, string $productDetail, int $amount, string $paymentCode,

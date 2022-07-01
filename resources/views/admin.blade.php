@@ -1462,7 +1462,7 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Payment Method</th>
                                     <th scope="col">Date Issued</th>
-                                    <th scope="col" class="text-center">Cash Points</th>
+                                    <th scope="col" class="text-center">Item</th>
                                     <th scope="col" class="text-center">Total Due</th>
 
                                     <th scope="col" class="text-center">Actions</th>
@@ -1476,7 +1476,12 @@
                                         <td class="align-middle">{{ $data->getPaymentMethod() }}</td>
                                         <td class="align-middle">{{ $data->date_created }}</td>
 
-                                        <td class="text-center align-middle">{{ number_format($data->cash_points) }}</td>
+                                        @if(!empty(App\Http\Controllers\DonateController::getPackageDetails($data->package)['item']))
+                                            <td class="text-center">{{ App\Http\Controllers\DonateController::getPackageDetails($data->package)['item']['name'] }}</td>
+                                        @else
+                                            <td class="text-center">{{ number_format($data->cash_points) }} CP</td>
+                                        @endif
+
                                         <td class="text-center align-middle">Rp. {{ number_format($data->price) }}</td>
 
                                         <td class="d-flex justify-content-center align-middle">

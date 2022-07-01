@@ -22,11 +22,17 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputAmount" class="col-sm-2 col-form-label">Cash Points</label>
+                    <label for="inputAmount" class="col-sm-2 col-form-label">Item</label>
                     <div class="col-sm-10">
                         <select class="form-control" id="inputAmount" name="package">
                             @foreach($packages as $key => $data)
-                                <option value="{{ $key }}" @if(Request::old("package") == $key) selected @endif>{{ number_format($data['CP']) }} CP - Rp. {{ number_format($data['price']) }} @if($data['bonus'] > 0) ({{ $data['bonus'] }}% bonus) @endif</option>
+                                @if(empty($data['item']))
+                                    <option value="{{ $key }}" @if(Request::old("package") == $key) selected @endif>{{ number_format($data['CP']) }} CP - Rp. {{ number_format($data['price']) }} @if($data['bonus'] > 0) ({{ $data['bonus'] }}% bonus) @endif</option>
+                                @else
+                                    <option value="{{ $key }}" @if(Request::old("package") == $key) selected @endif>
+                                        {{ $data['item']['name'] }} - Rp. {{ number_format($data['price']) }} @if($data['bonus'] > 0) ({{ $data['bonus'] }}% bonus) @endif
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
