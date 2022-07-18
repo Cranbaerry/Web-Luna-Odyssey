@@ -37,17 +37,17 @@ class DonateController extends DuitkuBaseController
         $this->addPackage(390000, 30000000, 30);
 
         $this->addPackage(0,15000,0, array (
-            'name' => 'Odyssey Adventure Package I',
+            'name' => 'Odyssey Adventure Package I (1 day)',
             'id' => 60000024,
             'quantity' => 1
         ));
         $this->addPackage(0,70000,0, array (
-            'name' => 'Odyssey Adventure Package II',
+            'name' => 'Odyssey Adventure Package II (7 days)',
             'id' => 60000025,
             'quantity' => 1
         ));
         $this->addPackage(0,250000,0, array (
-            'name' => 'Odyssey Adventure Package III',
+            'name' => 'Odyssey Adventure Package III (30 days)',
             'id' => 60000026,
             'quantity' => 1
         ));
