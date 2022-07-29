@@ -671,7 +671,7 @@ class AdminController extends Controller
                             $setting->value = $request->$key;
                             break;
                         case 'tiered_spender_start':
-                        case 'tiered_spender_title':
+                        case 'tiered_spender_end':
                             $setting->value = (string) strtotime($request->$key);
                             break;
                     }
